@@ -1,0 +1,113 @@
+.inv-action-button{
+    width: 40px;
+    height: 40px;
+    background-color: white;
+    color: var(--app-accent-color);
+    border-radius: 10px;
+    border: 1px solid;
+    font-size: 17px;
+  }
+
+.inv-action-button i{padding-right: 0px;}
+.custsearch i{
+  position: absolute;
+  left: 7px;
+  color: grey;
+  top: 35%;
+  transform: translateY(-50%);
+}
+.custsearch {
+  position: relative;
+}
+
+.custsearch{
+display: flex;
+}
+.custsearch input {
+  padding-left: 25px !important;
+  width: 66%;
+}
+
+.custsearch input, .custsearch .MuiInputBase-colorPrimary{
+  background-color: hsl(0,0%,100%);
+  border: 2px solid #E6E6E6;
+  border-radius: 5px;
+  display: flex;
+  height: 40px;
+  padding: 2px 8px;
+  margin-bottom: 20px;
+}
+.custsearch .MuiInputBase-colorPrimary{
+  width: 33%;
+  margin-left: 2%;
+}
+.table th{
+padding-left: 0px;
+padding-right: 0px;
+}
+.invicon{
+font-weight: 100;
+color: var(--app-accent-color);
+}
+.table th, .table td {
+  padding: 0.5rem;
+}
+.table{
+width: 120%;
+}
+.invh5{
+margin-left: 15px;
+font-weight: 700;
+}
+.fa-ellipsis-v{
+color: grey;
+cursor: pointer;
+}
+.MuiMenu-paper{
+width: 13% !important;
+left: 38%;
+}
+.css-6hp17o-MuiList-root-MuiMenu-list .MuiMenuItem-root{
+padding-top: 0px !important;
+padding-bottom: 0px !important;
+}
+.css-6hp17o-MuiList-root-MuiMenu-list .MuiListItem-gutters{
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+}
+.cardMargin{
+margin-top: 10px;
+}
+
+.css-6hp17o-MuiList-root-MuiMenu-list .MuiGrid-spacing-xs-3 .MuiGrid-item{
+padding-bottom: 0px !important;
+}
+
+.pagination-bar {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+.invfilter{
+  font-style: normal;
+}
+.MuiListSubheader-sticky{
+  position: static !important;
+}
+.MuiCheckbox-colorSecondary.Mui-checked {
+    color: var(--app-accent-color) !important;
+}
+.pagination-row {
+display: flex;
+margin-bottom: 10px;
+  label{
+  margin-top: 10px;
+  }
+  .MuiInputBase-colorPrimary{
+  background-color: hsl(0,0%,100%);
+  border: 2px solid #E6E6E6;
+  height: 40px;
+  padding: 2px 2px;
+  margin-left: 5px;
+  }
+}

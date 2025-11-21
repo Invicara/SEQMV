@@ -5,5 +5,5 @@ const endPointConfig = {
    datasourceServiceOrigin: 'https://sandbox-api.invicara.com',
    graphicsServiceOrigin: 'https://sandbox-api.invicara.com',
    baseRoot: 'http://localhost:8083',
-   applicationId: ''
+   applicationId: "1414f44b-883e-401c-8c0f-b2b2bd1dbefa"
 }

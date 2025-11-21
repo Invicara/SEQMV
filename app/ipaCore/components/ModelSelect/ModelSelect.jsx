@@ -25,6 +25,7 @@ const ModelSelect = () => {
       // if we switch between models too quickly we get errors
       setTimeout(async () => {
          let selectedModel = availableModelComposites.find(amc => amc._id === modelCompositeId)
+         console.log('selected model:---->',selectedModel)
          setSelectedModelComposite(selectedModel)
       }, 1000)
    }

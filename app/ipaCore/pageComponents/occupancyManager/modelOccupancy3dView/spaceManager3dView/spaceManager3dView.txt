@@ -1,0 +1,40 @@
+import React, { useState } from "react";
+import { Tabs, Tab, Box } from "@mui/material";
+import './spaceManager3dView.scss'
+// import LeaseView from "./LeaseView";
+// import SpaceView from "./SpaceView";
+import Space3dView from "./space3dView";
+const SpaceManager3dView = ({ selectedItems, ...props }) => {
+  const [activeTab, setActiveTab] = useState("space");
+   const handleChange = (event, newValue) => {
+    setActiveTab(newValue);
+  };
+
+  return (
+    <div className="space3dViewContainer">
+
+      <Box sx={{ display: "flex", flexDirection: "column" }}>
+        <div className="tabSideBar">
+          <Box sx={{ width: '100%', bgcolor: 'background.paper' }}>
+            <Tabs value={activeTab} onChange={handleChange} centered>
+              <Tab label="OCCUPANCY" value="space" />
+              <Tab label="LEASE" value="lease" />
+
+            </Tabs>
+          </Box>
+        </div>
+        <Box >
+          {activeTab === "space" &&
+            <Space3dView
+              {...props}
+              selectedItems={selectedItems}
+            />}
+          {/* {activeTab === "lease" && <LeaseView />} */}
+        </Box>
+      </Box>
+    </div>
+
+  );
+}
+
+export default SpaceManager3dView;

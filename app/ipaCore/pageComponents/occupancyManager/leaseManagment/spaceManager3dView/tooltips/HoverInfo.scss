@@ -1,0 +1,43 @@
+.observability-markup-anchor {
+    anchor-name: --observability-markup
+}
+
+// .observability-markup-tooltip {
+//     /*top: anchor(bottom);*/
+//     position: fixed;
+//     position-anchor: --observability-markup;
+//     inset-area: end;
+//     position-area: end;
+
+//     /* connect with position-try options */
+//     /*position-try-options: flip-block, flip-inline;
+//     position-try-fallbacks: flip-block, flip-inline;*/
+//     position-try-options: --bottomLeft, --topLeft, --topRight ;
+//     position-try-fallbacks: --bottomLeft, --topLeft, --topRight ;
+// }
+
+.observability-markup-tooltip {
+    position: fixed;
+    // transform: translate(-50%, -100%);
+    background: #333;
+    color: #fff;
+    padding: 6px 12px;
+    border-radius: 4px;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+@position-try --bottomLeft {
+    position-area: bottom left;
+    inset-area: bottom left;
+}
+
+@position-try --topLeft {
+    position-area: top left;
+    inset-area: top left;
+}
+
+@position-try --topRight {
+    position-area: top right;
+    inset-area: top right;
+}

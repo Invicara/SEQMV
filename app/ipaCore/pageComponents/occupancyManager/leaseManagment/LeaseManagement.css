@@ -1,0 +1,188 @@
+/* LeaseManagement.css */
+
+.lease-container {
+  font-family: 'Arial', sans-serif;
+  padding: 20px;
+  background-color: #f9f9f9;
+}
+
+.lease-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.lease-header h2 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.lease-filters select,
+.create-space-btn {
+  margin-left: 10px;
+  padding: 0px 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background-color: white;
+  cursor: pointer;
+}
+
+.create-space-btn {
+  background-color: #1890ff;
+  color: white;
+  border: none;
+}
+
+.lease-stats {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.lease-stat-box {
+  flex: 1;
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+}
+
+.lease-stat-box::before {
+  content: '';
+  display: inline-block;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ffccf3, #ffe5f1);
+  margin-right: 16px;
+  position: relative;
+}
+
+.lease-stat-box:nth-child(1)::before {
+  background-image: url('../icons/Available\ space.svg');
+  /* background-color: #fde7f2;
+  background-size: 24px; */
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.lease-stat-box:nth-child(2)::before {
+  background-image: url('../icons/Occupied\ space.svg');
+  /* background-color: #fde7f2;
+  background-size: 24px; */
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.lease-stat-box:nth-child(3)::before {
+  background-image: url('../icons/Revenue\ from\ occupied\ space.svg');
+  /* background-color: #fde7f2;
+  background-size: 24px; */
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.lease-stat-box p {
+  margin: 0;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.lease-stat-box h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.lease-charts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.lease-chart-box {
+  background-color: white;
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.chart-container {
+  height: 340px;
+  margin-top: 10px;
+}
+
+.legend-list {
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 4px;
+  font-size: 14px;
+}
+
+.legend-color {
+  width: 12px;
+  height: 12px;
+  margin-right: 8px;
+  border-radius: 8px;
+}
+
+.view-more {
+  color: #1890ff;
+  cursor: pointer;
+  text-align: right;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.chart-placeholder {
+  height: 200px;
+  background-color: #fafafa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+  border: 1px dashed #ddd;
+  font-size: 14px;
+}
+.lease-filters{
+    display: flex;
+    gap: 10px;
+}
+.lease-stat-box-text-value{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.chart-summary {
+  margin-top: 10px;
+  font-size: 0.9rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.view-more {
+  color: #1890ff;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.meter-charts{
+  display: block;
+}
+.filter-select{
+  color: #5D5D5D;
+}
+.lease-expire-total{
+  font-weight: 600;
+}

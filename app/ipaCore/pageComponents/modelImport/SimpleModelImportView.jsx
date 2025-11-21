@@ -551,7 +551,7 @@ class SimpleModelImportView extends React.Component {
                     </td>
                     <td>{isImported(bv, allImportedModelVersions) && isTipVersion(bv, bimpks, selectedBimpk) && <div 
                         className='delete-ver' 
-                        onClick={() =>deleteImportedVersion(bv, allImportedModelVersions) }
+                        onClick={() =>this.deleteImportedVersion(bv, allImportedModelVersions) }
                       >
                         <i className='fas fa-trash'></i>
                       </div>}

@@ -1,7 +1,7 @@
 const ipaConfig = {
    appName: "Model Quick View",
    configUserType: "quick-view",
-   applicationId: '',
+   applicationId: '1414f44b-883e-401c-8c0f-b2b2bd1dbefa',
    scriptPlugins: [],
    css: [],
    redux: {
