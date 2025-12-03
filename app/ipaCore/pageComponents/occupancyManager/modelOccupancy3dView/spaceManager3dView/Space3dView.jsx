@@ -469,6 +469,7 @@ const Space3dView = ({ selectedItems, ...props }) => {
   }, [spaceData])
 
   const loadAllModels = async () => {
+    setIsLoading(true);
     try {
       let spaceMapModel = await ScriptCache.runScript(props.handler.spaceOccupancy.config.entityData.getSpacesMapModel.script, {});
       console.log('get space map with model:---->', spaceMapModel);
@@ -488,6 +489,7 @@ const Space3dView = ({ selectedItems, ...props }) => {
       console.error(err)
       setAvailableModel([{ _id: 0, _name: "Error Retrieving Imported Models" }])
     }
+    setIsLoading(false);
   }
 
   const onCreateViewerRef = (ref) => {

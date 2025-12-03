@@ -45,14 +45,14 @@ body {
     height: 100vh;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     background: #eee;
     flex-grow: 1;
   }
   
   .model-placeholder {
     width: 98%;
-    height: 80%;
+    height: 82%;
     background: #ccc;
     display: flex;
     position: absolute;

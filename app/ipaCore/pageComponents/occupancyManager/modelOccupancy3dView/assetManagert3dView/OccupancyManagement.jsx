@@ -415,6 +415,7 @@ const OccupancyManagement = ({ selectedItems, ...props }) => {
   }, [assetData])
 
   const loadAllModels = async () => {
+    setIsLoading(true);
     try {
       let assetMapModel = await ScriptCache.runScript(props.handler.AssetOccupancy.config.entityData.getAssetMapModel.script, {});
       console.log('get asset map with model:---->', assetMapModel);
@@ -437,6 +438,7 @@ const OccupancyManagement = ({ selectedItems, ...props }) => {
       console.error(err)
       setAvailableModel([{ _id: 0, _name: "Error Retrieving Imported Models" }])
     }
+    setIsLoading(false);
   }
 
   const onCreateViewerRef = (ref) => {
