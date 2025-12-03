@@ -7,7 +7,7 @@ import moment from "moment";
 import * as UiUtils from '@dtplatform/ui-utils'
 import '../../../components/UserModal.scss'
 
-const MoveUser = ({ isOpen, onClose, isSuccessOrFailMsg,userInfo, spaceInfo, mode, ...props }) => {
+const MoveUser = ({ isOpen, onClose, isSuccessOrFailMsg,userInfo, spaceInfo, mode,selectedModel,selectedSpaceCollection, ...props }) => {
     //console.log('move user info :--->', userInfo)
     console.log(props, 'props-->');
 
@@ -314,17 +314,22 @@ const MoveUser = ({ isOpen, onClose, isSuccessOrFailMsg,userInfo, spaceInfo, mod
         };
 
         const updatedMoveArray = {
-                _id: selectedSpace._id,
-                'Space Name': selectedSpace['Space Name'],
-                properties: moveUserUpdatedProperties
-            }
+            _id: selectedSpace._id,
+            'Space Name': selectedSpace['Space Name'],
+            properties: moveUserUpdatedProperties
+        }
         
-
         console.log('Unallocated user array :---->',updatedUnallocateArray)
         console.log('move user array :---->',updatedMoveArray)
 
+        let filter = {
+            entity: [updatedUnallocateArray,updatedMoveArray],
+            collectionInfo: selectedSpaceCollection[0]
+        }
+
+
         ScriptCache.clearCache();
-        const moveUser = await ScriptCache.runScript(props.handler.spaceOccupancy.config.actions.Create.script, [updatedUnallocateArray,updatedMoveArray])
+        const moveUser = await ScriptCache.runScript(props.handler.spaceOccupancy.config.actions.Create.script, filter)
         console.log('moveUser result:--->',moveUser);
         if (moveUser.success) {
             isSuccessOrFailMsg({ success: true, modalForm: 'Move', action: 'User'})

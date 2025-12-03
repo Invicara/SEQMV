@@ -336,7 +336,8 @@ const OccupancyManagement = ({ selectedItems, ...props }) => {
   const [officeFilter, setOfficeFilter] = useState([]);
   const [allFilters, setAllFilters] = useState({});
   const [availableModel, setAvailableModel] = useState([])
-  const [spaceMapWithModel, setSpaceMapWithModel] = useState([])
+  const [assetMapWithModel, setAssetMapWithModel] = useState([])
+  const [assetCollection, setAssetCollection] = useState([])
   const [mapboxToken, setMapboxToken] = useState()
   const [statusFilter, setStatusFilter] = useState([
     "Available",
@@ -354,10 +355,10 @@ const OccupancyManagement = ({ selectedItems, ...props }) => {
   const isolatedEntities = useSelector(Entities.getIsolatedEntities);
   const selectedEntities = useSelector(Entities.getSelectedEntities);
   const levelZvalue = {
-    "L0" : 14744.21,
-    "L1" : 10884.76,
-    "L2" : 10091.56,
-    "B1" : -2487.77,
+    "L0" : 183945.62,
+    "L1" : 12794.17,
+    "L2" : 198547.54,
+    "B1" : 188130.71,
     "1F" : 9783.40,
     "MZ" : 11333.13,
     "GF" : 18595.12
@@ -415,19 +416,22 @@ const OccupancyManagement = ({ selectedItems, ...props }) => {
 
   const loadAllModels = async () => {
     try {
-      let spaceMapModel = await ScriptCache.runScript(props.handler.spaceOccupancy.config.entityData.getSpacesMapModel.script, {});
-      console.log('get space map with model:---->', spaceMapModel);
-      setSpaceMapWithModel(spaceMapModel)
+      let assetMapModel = await ScriptCache.runScript(props.handler.AssetOccupancy.config.entityData.getAssetMapModel.script, {});
+      console.log('get asset map with model:---->', assetMapModel);
+      setAssetMapWithModel(assetMapModel)
+      // let spaceMapModel = await ScriptCache.runScript(props.handler.spaceOccupancy.config.entityData.getSpacesMapModel.script, {});
+      // console.log('get space map with model:---->', spaceMapModel);
+      // setSpaceMapWithModel(spaceMapModel)
       let currentProject = await IafProj.getCurrent()
       let importedModelComposites = await IafProj.getModels(currentProject)
       console.log('All models :----->', importedModelComposites)
-      let modelName = spaceMapModel.map(info => {
+      let modelName = assetMapModel.map(info => {
         return info["Model Name"]
       })
-      const spaceWithModel = importedModelComposites.filter(model => modelName.includes(model._name));
+      const assetWithModel = importedModelComposites.filter(model => modelName.includes(model._name));
       //  importedModelComposites.filter(model=> model._name == info["Model Name"])
-      console.log('spaceWithModel:------>', spaceWithModel)
-      setAvailableModel(spaceWithModel)
+      console.log('assetWithModel:------>', assetWithModel)
+      setAvailableModel(assetWithModel)
     } catch (err) {
       console.error("ERROR: Retrieving Imported Models")
       console.error(err)
@@ -445,7 +449,7 @@ const OccupancyManagement = ({ selectedItems, ...props }) => {
   }
 
   const notify = (msg) => {
-    let headerStyle = document.getElementsByClassName("titlebar-header");
+    let headerStyle = document.getElementsByClassName("HeaderBar__container");
     //console.log(headerStyle[0].style,'hader--')
     console.log('Notification!');
 
@@ -506,8 +510,12 @@ const OccupancyManagement = ({ selectedItems, ...props }) => {
       setCuttingPlane(viewerRef, zvalue);
     }
     try {
+      const selectedAssetMapWithModel = assetMapWithModel.filter((model => model['Model Name'] == selectedModel._name && model['category'] == 'Asset'));
+      console.log('selectedAssetMapWithModel :------>',selectedAssetMapWithModel)
+      setAssetCollection(selectedAssetMapWithModel)
       ScriptCache.clearCache();
-      const floorAssets = await ScriptCache.runScript(props.handler.AssetOccupancy.config.entityData.getAssets.script, { levelName })
+      // const floorAssets = await ScriptCache.runScript(props.handler.AssetOccupancy.config.entityData.getAssets.script, { levelName })
+     const floorAssets = await ScriptCache.runScript(props.handler.AssetOccupancy.config.entityData.getAssets.script, { "levelName":levelName,"model":selectedModel ,"collectionInfo":selectedAssetMapWithModel[0] }) 
       console.log('asset data:-->', floorAssets);
       setAssetData(floorAssets)
       setFloorAsset(floorAssets)
@@ -528,11 +536,16 @@ const OccupancyManagement = ({ selectedItems, ...props }) => {
 
   const onOfficeChange = async (value) => {
     console.log('on type change :--->', value);
+    const selectedSpaceMapWithModel = assetMapWithModel.filter((model => model['Model Name'] == selectedModel._name && model['category'] == 'Space'));
+    console.log('selectedSpaceMapWithModel :------>',selectedSpaceMapWithModel)
     let filters = {
-      spaceName : value
+      "spaceName" : value?.toUpperCase(),
+      "model":selectedModel ,
+      "collectionInfo":selectedSpaceMapWithModel[0]
     }
     try {
       ScriptCache.clearCache();
+      
       const selectedSpace = await ScriptCache.runScript(props.handler.AssetOccupancy.config.entityData.getSpaceByName.script, filters)
       console.log('get spaces by name :-->', selectedSpace);
       await cameraOnTop(viewerRef, selectedSpace[0]?.modelViewerIds);
@@ -557,8 +570,12 @@ const OccupancyManagement = ({ selectedItems, ...props }) => {
     setAssetClickType('')
     setStatusChartData([])
     setIsLoading(true);
+    const selectedAssetMapWithModel = assetMapWithModel.filter((model => model['Model Name'] == selectedModel._name && model['category'] == 'Asset'));
+    console.log('selectedAssetMapWithModel :------>',selectedAssetMapWithModel)
     let filters = {
-      floor:value?.floorValue || ""
+      floor:value?.floorValue || "",
+      model: selectedModel,
+      collectionInfo : selectedAssetMapWithModel[0]
     }
     if(value?.type == "assetClick"){
       filters = {
@@ -571,6 +588,8 @@ const OccupancyManagement = ({ selectedItems, ...props }) => {
         floor: spaceLevels[value.floor]?.name || "",
         office: value?.office || "",
         cabin: value?.cabin || "",
+        model: selectedModel,
+        collectionInfo : selectedAssetMapWithModel[0]
       };
       setAllFilters(filters)
     }
@@ -693,8 +712,10 @@ const OccupancyManagement = ({ selectedItems, ...props }) => {
     setIsLoading(true);
     console.log('on text search value:---->>>', value)
     try {
+      const selectedAssetMapWithModel = assetMapWithModel.filter((model => model['Model Name'] == selectedModel._name && model['category'] == 'Asset'));
+      console.log('selectedSpaceMapWithModel :------>',selectedAssetMapWithModel)
       ScriptCache.clearCache();
-      const floorAssets = await ScriptCache.runScript(props.handler.AssetOccupancy.config.entityData.getAssets.script, { "userName": value })
+      const floorAssets = await ScriptCache.runScript(props.handler.AssetOccupancy.config.entityData.getAssets.script, { "userName": value ,"model": selectedModel,"collectionInfo" : selectedAssetMapWithModel[0] })
       console.log('asset data on search  :-->', floorAssets);
       setAssetData(floorAssets)
       setUserInfo(floorAssets)
@@ -747,20 +768,24 @@ const OccupancyManagement = ({ selectedItems, ...props }) => {
     const uniqueLevels = [
       ...new Set(
         buildingData
-          .filter(item => item?.properties?.["Model"]?.val == selectedModel._name) // name filter
-          .map(item => item?.properties?.["Level"]?.val)
-          .filter(Boolean)
+          .filter(item =>
+            item?.properties?.["Model"]?.val === selectedModel?._name &&
+            item?.properties?.["category"]?.val?.toLowerCase() === "occupancy"
+          )
+          .map(item => ({
+            level: item?.properties?.["Level"]?.val,
+            zvalue: item?.properties?.["Zvalue"]?.val,
+          }))
+          .filter(v => v !== null && v !== undefined)
       )
     ];
 
 
     console.log('uniqueLevels data :--->', uniqueLevels)
-    const LevelData = uniqueLevels.map((levelName) => {
-      if (levelZvalue[levelName]) {
-        return {
-          name: levelName,
-          zValue: levelZvalue[levelName]
-        }
+    const LevelData = uniqueLevels.map((levelData) => {
+      return {
+        name: levelData.level,
+        zValue: levelData.zvalue
       }
     })
     console.log('level data :--->', LevelData)
@@ -841,6 +866,8 @@ const OccupancyManagement = ({ selectedItems, ...props }) => {
         assetClickType={assetClickType}
         isMoved={isMoved}
         onFetch={onFetch}
+        assetCollection= {assetCollection}
+        selectedModel={selectedModel}
       />
 
       {/*Unassign and Assign User */}
@@ -854,6 +881,7 @@ const OccupancyManagement = ({ selectedItems, ...props }) => {
         onFloorChange={onFloorChange}
         isUnassigned={isUnassigned}
         onFetch={onFetch}
+        assetCollection= {assetCollection}
       />
       <Notification 
         open={state.openMsg}

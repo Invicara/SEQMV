@@ -3,7 +3,7 @@ import { ScriptCache } from "@invicara/ipa-core/modules/IpaUtils";
 import { makeStyles, Button, Select, MenuItem, CircularProgress } from "@mui/material";
 import './UserModal.scss'
 
-const AssignAndUnassignUser = ({ isOpen, onClose, isUnassigned, userInfo, floorValue, onTextSearch, onFloorChange,onFetch, ...props }) => {
+const AssignAndUnassignUser = ({ isOpen, onClose, isUnassigned, userInfo, floorValue, onTextSearch, onFloorChange,onFetch,assetCollection, ...props }) => {
     console.log('move user info :--->', userInfo)
     if (!isOpen) return null;
 
@@ -37,7 +37,11 @@ const AssignAndUnassignUser = ({ isOpen, onClose, isUnassigned, userInfo, floorV
 
         try {
             ScriptCache.clearCache();
-            const floorAssets = await ScriptCache.runScript(props.handler.AssetOccupancy.config.entityData.editUser.script, [updateFromAsset.entity])
+            let filter ={
+                entity:[updateFromAsset.entity],
+                collectionInfo : assetCollection[0]
+            }
+            const floorAssets = await ScriptCache.runScript(props.handler.AssetOccupancy.config.entityData.editUser.script, filter)
             if(floorAssets.success === true){
                 if(isAssigning){
                     isUnassigned({success: true, modal: 'Assign'})

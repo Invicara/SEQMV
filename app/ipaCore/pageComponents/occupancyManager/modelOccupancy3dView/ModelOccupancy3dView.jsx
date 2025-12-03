@@ -19,8 +19,8 @@ const ModelOccupancy3dView = ({ selectedItems, ...props }) => {
         <div className="tabSideBar">
           <Box sx={{ width: '100%', bgcolor: 'background.paper' }}>
             <Tabs value={activeTab} onChange={handleChange} centered>
-              <Tab label="OCCUPANCY" value="space" />
-              <Tab label="LEASE" value="lease" />
+              <Tab label="LEASE" value="space" />
+              <Tab label="OCCUPANCY" value="lease" />
 
             </Tabs>
           </Box>

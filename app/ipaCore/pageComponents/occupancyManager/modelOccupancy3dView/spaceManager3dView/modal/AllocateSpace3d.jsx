@@ -7,7 +7,7 @@ import moment from "moment";
 import * as UiUtils from '@dtplatform/ui-utils'
 import '../../../components/UserModal.scss'
 
-const AllocateSpace3d = ({ isOpen, onClose, isSuccessOrFailMsg, spaceInfo, mode, ...props }) => {
+const AllocateSpace3d = ({ isOpen, onClose, isSuccessOrFailMsg, spaceInfo, mode,selectedModel,selectedSpaceCollection, ...props }) => {
     //console.log('move user info :--->', userInfo)
     console.log(props, 'props-->');
 
@@ -143,15 +143,24 @@ const AllocateSpace3d = ({ isOpen, onClose, isSuccessOrFailMsg, spaceInfo, mode,
         let mergerSpacevalue = mergeSpaceData(userInput, spaceData)
         console.log('mergerSpacevalue :----->', mergerSpacevalue)
 
-         let updatedItemArray = [{
-            _id: mergerSpacevalue._id,
-            "Space Name": mergerSpacevalue['Space Name'],
-            properties: mergerSpacevalue.properties
-        }]
+        //  let updatedItemArray = [{
+        //     _id: mergerSpacevalue._id,
+        //     "Space Name": mergerSpacevalue['Space Name'],
+        //     properties: mergerSpacevalue.properties
+        // }]
 
-        console.log('final updated array :---->', updatedItemArray)
+        let filter = {
+            entity: [{
+                _id: mergerSpacevalue._id,
+                "Space Name": mergerSpacevalue['Space Name'],
+                properties: mergerSpacevalue.properties
+            }],
+            collectionInfo: selectedSpaceCollection[0]
+        }
+
+        console.log('final updated array :---->', filter)
         ScriptCache.clearCache();
-        const allocateSpace = await ScriptCache.runScript(props.handler.spaceOccupancy.config.actions.Create.script, updatedItemArray)
+        const allocateSpace = await ScriptCache.runScript(props.handler.spaceOccupancy.config.actions.Create.script, filter)
         console.log(allocateSpace, 'allocateSpace');
         if (allocateSpace.success) {
             isSuccessOrFailMsg({ success: true, modalForm: 'Space', action: 'Allocated' })

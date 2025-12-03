@@ -3,7 +3,7 @@ import { ScriptCache } from "@invicara/ipa-core/modules/IpaUtils";
 import { CircularProgress } from "@mui/material";
 import '../../../components/UserModal.scss'
 
-const UnallocateSpace = ({ isOpen, onClose, isSuccessOrFailMsg, userInfo, mode, ...props }) => {
+const UnallocateSpace = ({ isOpen, onClose, isSuccessOrFailMsg, userInfo, mode,selectedModel,selectedSpaceCollection, ...props }) => {
     console.log('move user info :--->', userInfo)
     console.log(props,'props-->');
     
@@ -91,16 +91,27 @@ const UnallocateSpace = ({ isOpen, onClose, isSuccessOrFailMsg, userInfo, mode, 
         };
 
         // Construct array with updated item format
-        const updatedItemArray = [
-            {
-                _id: userInfo._id,
-                'Space Name': userInfo['Space Name'],
-                properties: updatedProperties
-            }
-        ];
-        console.log('Final object to save :--->',updatedItemArray)
+        // const updatedItemArray = [
+        //     {
+        //         _id: userInfo._id,
+        //         'Space Name': userInfo['Space Name'],
+        //         properties: updatedProperties
+        //     }
+        // ];
+
+        let filter = {
+            entity: [
+                {
+                    _id: userInfo._id,
+                    'Space Name': userInfo['Space Name'],
+                    properties: updatedProperties
+                }
+            ],
+            collectionInfo: selectedSpaceCollection[0]
+        }
+        console.log('Final object to save :--->',filter)
         ScriptCache.clearCache();
-        const updateSpace = await ScriptCache.runScript(props.handler.spaceOccupancy.config.actions.Create.script, updatedItemArray)
+        const updateSpace = await ScriptCache.runScript(props.handler.spaceOccupancy.config.actions.Create.script, filter)
         console.log(updateSpace, 'unallocateSpace');
         if(updateSpace.success === true){
             isSuccessOrFailMsg({success : true, modalForm : 'Space', action : 'unallocated'})

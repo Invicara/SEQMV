@@ -354,7 +354,7 @@ const Space3dView = ({ selectedItems, ...props }) => {
   const [allFilters, setAllFilters] = useState({});
   const [spaceBiulding, setSpaceBiulding] = useState([]);
   const [spaceBiuldingAndLevels, setSpaceBiuldingAndLevels] = useState([]);
-  const [unallocateMode, setUnallocateMode] = useState(false)
+  const [selectedSpaceCollection, setSelectedSpaceCollection] = useState(false)
   const [mapboxToken, setMapboxToken] = useState()
   const [availableModel, setAvailableModel] = useState([])
   const [spaceMapWithModel, setSpaceMapWithModel] = useState([])
@@ -499,7 +499,7 @@ const Space3dView = ({ selectedItems, ...props }) => {
   }
 
   const notify = (msg) => {
-    let headerStyle = document.getElementsByClassName("titlebar-header");
+    let headerStyle = document.getElementsByClassName("HeaderBar__container");
     //console.log(headerStyle[0].style,'hader--')
     console.log('Notification!');
 
@@ -558,26 +558,54 @@ const Space3dView = ({ selectedItems, ...props }) => {
     //   )
     // ];
 
+    // const uniqueLevels = [
+    //   ...new Set(
+    //     buildingData
+    //       .filter(item =>
+    //         item?.properties?.["Model"]?.val === selectedModel?._name &&
+    //         item?.properties?.["category"]?.val?.toLowerCase() === "lease"
+    //       ) // name filter
+    //       .map(item => item?.properties?.["Level"]?.val)
+    //       .filter(Boolean)
+    //   )
+    // ];
+
+
+    // console.log('uniqueLevels data :--->', uniqueLevels)
+    // const LevelData = uniqueLevels.map((levelName) => {
+    //   if (levelZvalue[levelName]) {
+    //     return {
+    //       name: levelName,
+    //       zValue: levelZvalue[levelName]
+    //     }
+    //   }
+    // })
+
     const uniqueLevels = [
       ...new Set(
         buildingData
-          .filter(item => item?.properties?.["Model"]?.val == selectedModel._name) // name filter
-          .map(item => item?.properties?.["Level"]?.val)
-          .filter(Boolean)
+          .filter(item =>
+            item?.properties?.["Model"]?.val === selectedModel?._name &&
+            item?.properties?.["category"]?.val?.toLowerCase() === "lease"
+          )
+          .map(item => ({
+            level: item?.properties?.["Level"]?.val,
+            zvalue: item?.properties?.["Zvalue"]?.val,
+          }))
+          .filter(v => v !== null && v !== undefined)
       )
     ];
 
 
     console.log('uniqueLevels data :--->', uniqueLevels)
-    const LevelData = uniqueLevels.map((levelName) => {
-      if (levelZvalue[levelName]) {
-        return {
-          name: levelName,
-          zValue: levelZvalue[levelName]
-        }
+    const LevelData = uniqueLevels.map((levelData) => {
+      return {
+        name: levelData.level,
+        zValue: levelData.zvalue
       }
     })
     console.log('level data :--->', LevelData)
+
     setSpaceLevels(LevelData)
     setSelectedModel(selectedModel)
     setIsLoading(false);
@@ -601,6 +629,7 @@ const Space3dView = ({ selectedItems, ...props }) => {
     try {
       spaceMapWithModel
       const selectedSpaceMapWithModel = spaceMapWithModel.filter(model => model['Model Name'] == selectedModel._name);
+      setSelectedSpaceCollection(selectedSpaceMapWithModel)
       console.log('selectedSpaceMapWithModel :------>',selectedSpaceMapWithModel)
       ScriptCache.clearCache();
       const floorSpaces = await ScriptCache.runScript(props.handler.spaceOccupancy.config.entityData.getFilterSpaces.script, { "floor":levelName,"model":selectedModel ,"collectionInfo":selectedSpaceMapWithModel[0] })
@@ -679,8 +708,11 @@ const Space3dView = ({ selectedItems, ...props }) => {
     setSpaceClickType('')
     setStatusChartData([])
     setIsLoading(true);
+    const selectedSpaceMapWithModel = spaceMapWithModel.filter(model => model['Model Name'] == selectedModel._name);
     let filters = {
-      floor:value?.floorValue || ""
+      floor:value?.floorValue || "",
+      model:selectedModel ,
+      collectionInfo :selectedSpaceMapWithModel[0]
     }
     if(value?.type == "assetClick"){
       filters = {
@@ -690,11 +722,11 @@ const Space3dView = ({ selectedItems, ...props }) => {
     }else{
       setSelectedLeve(spaceLevels[value.floor]?.name)
       filters = {
-        building: value?.building?.toUpperCase() || "",
         floor: spaceLevels[value.floor]?.name || "",
         spaceName: value?.space || "",
         cabin: value?.cabin || "",
-        model:selectedModel
+        model: selectedModel,
+        collectionInfo: selectedSpaceMapWithModel[0]
       };
       setAllFilters(filters)
     }
@@ -746,8 +778,9 @@ const Space3dView = ({ selectedItems, ...props }) => {
     setIsLoading(true);
     console.log('on text search value:---->>>', value)
     try {
+      const selectedSpaceMapWithModel = spaceMapWithModel.filter(model => model['Model Name'] == selectedModel._name);
       ScriptCache.clearCache();
-      const floorAssets = await ScriptCache.runScript(props.handler.spaceOccupancy.config.entityData.getFilterSpaces.script, { "userName": value })
+      const floorAssets = await ScriptCache.runScript(props.handler.spaceOccupancy.config.entityData.getFilterSpaces.script, { "userName": value,"model":selectedModel ,"collectionInfo":selectedSpaceMapWithModel[0] })
       console.log('asset data on search  :-->', floorAssets);
       setSpaceData(floorAssets)
       setUserInfo(floorAssets)
@@ -863,6 +896,8 @@ const Space3dView = ({ selectedItems, ...props }) => {
         userInfo={userInfo[0]?.entity}
         spaceInfo ={totalSpaceData}
         mode = {'3dView'}
+        selectedModel={selectedModel}
+        selectedSpaceCollection={selectedSpaceCollection}
       />
       <UnallocateSpace
         {...props}
@@ -870,6 +905,8 @@ const Space3dView = ({ selectedItems, ...props }) => {
         onClose={() => setIsUnassignModalOpen(false)}
         isSuccessOrFailMsg={isSuccessOrFailMsg}
         userInfo={userInfo[0]?.entity}
+        selectedModel={selectedModel}
+        selectedSpaceCollection={selectedSpaceCollection}
       />
       <AllocateSpace3d
         {...props}
@@ -878,6 +915,8 @@ const Space3dView = ({ selectedItems, ...props }) => {
         onClose={() => setIsAssignModalOpen(false)}
         spaceInfo={userInfo[0]?.entity}
         mode = {'3dView'}
+        selectedModel={selectedModel}
+        selectedSpaceCollection={selectedSpaceCollection}
       />
       <Notification 
         open={state.openMsg}

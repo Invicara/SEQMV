@@ -3,7 +3,7 @@ import { ScriptCache } from "@invicara/ipa-core/modules/IpaUtils";
 import { makeStyles, Button, Select, MenuItem, CircularProgress } from "@mui/material";
 import './UserModal.scss'
 
-const MoveUserModal = ({ isOpen, onClose, userInfo,isMoved, floorValue,onTextSearch,onFloorChange,assetClickType,onFetch, ...props }) => {
+const MoveUserModal = ({ isOpen, onClose, userInfo,isMoved, floorValue,onTextSearch,onFloorChange,assetClickType,onFetch,assetCollection,selectedModel, ...props }) => {
   console.log('move user info :--->', userInfo)
   if (!isOpen) return null;
   const [floorAsset, setFloorAsset] = useState([]);
@@ -21,9 +21,10 @@ const MoveUserModal = ({ isOpen, onClose, userInfo,isMoved, floorValue,onTextSea
     //console.log(props,'props-->');
     if(floorValue == undefined){
       //get all the floors logic
-      const getAllAssets = await ScriptCache.runScript(props.handler.AssetOccupancy.script.getOccupancyAssets, { entityInfo: {}})
+      // const getAllAssets = await ScriptCache.runScript(props.handler.AssetOccupancy.script.getOccupancyAssets, { entityInfo: {}})
+       const getAllAssets = await ScriptCache.runScript(props.handler.AssetOccupancy.config.entityData.getAssets.script, { "model":selectedModel ,"collectionInfo":assetCollection[0]})
       let uniqueFloores = [...new Set(getAllAssets.filter(assetData => assetData.properties['Level'].val).map(item => item.properties['Level'].val))];
-      //console.log(uniqueFloores,'uniqueFloores');
+      console.log(uniqueFloores,'uniqueFloores');
       setLevels(uniqueFloores)
     } else {
       await setSelectedLevel(floorValue)
@@ -35,7 +36,7 @@ const MoveUserModal = ({ isOpen, onClose, userInfo,isMoved, floorValue,onTextSea
     ScriptCache.clearCache();
     //{floor: '1 st Floor'}
     setIsLoading(true);
-    const floorAssets = await ScriptCache.runScript(props.handler.AssetOccupancy.config.entityData.getAssets.script, { floor })
+    const floorAssets = await ScriptCache.runScript(props.handler.AssetOccupancy.config.entityData.getAssets.script, { "levelName":floor,"model":selectedModel ,"collectionInfo":assetCollection[0] })
     console.log('move user asset data:-->', floorAssets);
     setFloorAsset(floorAssets)
     let availableRooms = [...new Set(
@@ -156,7 +157,11 @@ const MoveUserModal = ({ isOpen, onClose, userInfo,isMoved, floorValue,onTextSea
 
     try {
       ScriptCache.clearCache();
-      const floorAssets = await ScriptCache.runScript(props.handler.AssetOccupancy.config.entityData.editUser.script, [updateToAsset.entity, updateFromAsset.entity])
+      let filter = {
+        entity: [updateToAsset.entity, updateFromAsset.entity],
+        collectionInfo: assetCollection[0]
+      }
+      const floorAssets = await ScriptCache.runScript(props.handler.AssetOccupancy.config.entityData.editUser.script, filter)
       console.log(floorAssets,'floorAssets');
       
       console.log('current user :----->',currentUser.entity.properties?.['Occupant'].val)
